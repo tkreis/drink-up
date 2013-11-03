@@ -1,15 +1,22 @@
 .water-reminder{
-  top:0px; 
-  left: 0px;
-  text-align:center;
   background:black;
   color: white;
-  position:absolute;
+  height:100%;
+  left: 0px;
   padding:20px;
-  z-index:999999;
+  position:fixed;
+  text-align:center;
+  top:0px; 
+  width:100%;
+  z-index:9999999999999999999999999999999999999999999999999999; /* to fix other large z-index */
+}
+
+.water-reminder h1{
+  font-size: 3.4em;
 }
 
 .water-reminder a{
   cursor: pointer;
-  float:right;
+  font-size:2em;
+  width:100%;
 }
