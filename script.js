@@ -1,33 +1,40 @@
-var lastReminder = new Date().getTime();
-function checkReminder(){
-var currentTime = new Date().getTime();
- if((currentTime-lastReminder)/1000/60 >= 1 ){
-   lastReminder = currentTime;
-   if(document.getElementById('water-reminder') === null){
-     createReminder();
-   }
+var notifier, closeBtn;
+
+chrome.extension.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    if (request.msg == "new")
+      if(!hasReminderVisible()){
+        createReminder();
+      }
+      if(request.msg == 'closed'){
+        removeNotifier();
+      }
+  });
+
+  function hasReminderVisible(){
+    return !(document.getElementById('water-reminder') === null);
   }
-    
-     setTimeout( checkReminder , 1000)
-}
 
 
-function createReminder(){
-   var notifier = document.createElement('div');
-   var closeBtn= document.createElement('a');
+  function createReminder(){
+    notifier = document.createElement('div');
+    closeBtn= document.createElement('a');
 
-   closeBtn.textContent = "Ok Ok, I'll go";
-   notifier.textContent  = 'Drink up, and get new water';
-   notifier.id = 'water-reminder';
-   notifier.className= 'water-reminder';
-   notifier.appendChild(closeBtn);
-   window.document.body.appendChild(notifier);
+    closeBtn.textContent = "Ok Ok, I'll go";
+    notifier.textContent  = 'Drink up, and get new water';
+    notifier.id = 'water-reminder';
+    notifier.className= 'water-reminder';
+    notifier.appendChild(closeBtn);
+    window.document.body.appendChild(notifier);
 
-   closeBtn.addEventListener('click', function(){
-     closeBtn.removeEventListener('click');
-     notifier.parentNode.removeChild(notifier);
-   });
-}
+    closeBtn.addEventListener('click', function(){
+      removeNotifier();
+    });
+  }
 
+  function removeNotifier(){
+    closeBtn.removeEventListener('click');
+    notifier.parentNode.removeChild(notifier);
 
- checkReminder();
+    chrome.extension.sendMessage({msg: "closed"});
+  }
